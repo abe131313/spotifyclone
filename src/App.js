@@ -11,6 +11,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Rating from '@mui/material/Rating';
 import Typography from '@mui/material/Typography';
+import { getNativeSelectUtilityClasses } from '@mui/material';
 
 
 const style = {
@@ -31,13 +32,14 @@ const style = {
 
 function App(props) {
   var avgRating;
-  var topArtistsByAverageRating = [];
+  var topSongsByAverageRating = [];
   const artistCollectionRef = collection(db,'artistinfo');
   const [artistInfo,setArtistInfo] = useState([])
   const [song,setSong] = useState("");
   const[dateofrelease,setDateOfRelease] = useState("")  
   const[artist,setArtist] = useState("")
   const [value, setValue] = React.useState(2);
+  const [dob,setDob] = useState(null)
   const[render,setRender] = useState(0)
   
 
@@ -49,7 +51,7 @@ function App(props) {
 
 
   const createArtist = async() => {
-    await addDoc(artistCollectionRef,{artist:artist,dateofrelease:dateofrelease,song:song,rating:value});
+    await addDoc(artistCollectionRef,{artist:artist,dateofrelease:dateofrelease,song:song,rating:value,dob:dob});
   }
 
   useEffect(() => {
@@ -72,18 +74,11 @@ function App(props) {
   
   artistInfo.map((item) => {
     if(avgRating == item.rating){
-      topArtistsByAverageRating.push(item)
+      topSongsByAverageRating.push(item)
     }
   })
 
-  console.log(topArtistsByAverageRating)
-
-
-  
- 
-  
-
-
+  console.log(topSongsByAverageRating)
   return (
     <div>
       <nav class="navbar navbar-expand-lg bg-light">
@@ -114,12 +109,13 @@ function App(props) {
                 <input placeholder='Name of the artist' onChange={(event) => {setArtist(event.target.value)}}></input>
                 <input onChange={(event) => {setSong(event.target.value)}} placeholder='song'></input>
                 <input onChange={(event) => {setDateOfRelease(event.target.value)}} placeholder='date of release'></input>
+                <input onChange={(event) => {setDob(event.target.value)}} placeholder='Date Of Birth'></input>
                 <label></label>
                 <select name="cars" id="cars">
                   <option value='select'>Choose from existing artists</option>
                   {
                     artistInfo.map((item) => {
-                      return  <option value={item.artist}>{item.artist}</option>
+                      return  <option onClick={(e) =>{setArtist(e.target.value)} } value={item.artist}>{item.artist}</option>
                     })
                   }
                 </select>
@@ -147,7 +143,7 @@ function App(props) {
         
       </Modal>
 
-      <h3 class ='m-3'>Top artists</h3>
+      <h3 class ='m-3'>Top 10 songs</h3>
 
       <table class="table">
         <thead>
@@ -160,7 +156,7 @@ function App(props) {
           </tr>
         </thead>
         <tbody>
-            {topArtistsByAverageRating.map((item) => {
+            {topSongsByAverageRating.map((item) => {
               return(
               <tr>
                 <td>{item.artist}</td>
@@ -179,7 +175,8 @@ function App(props) {
                           setValue(newValue);
                           }}
                       />
-                  </Box>}</td>         
+                  </Box>}
+                </td>         
               </tr>
               )
             })
