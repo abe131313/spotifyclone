@@ -166,7 +166,6 @@ function App(props) {
                 <td>{item.artist}</td>
                 <td>{item.dateofrelease}</td>
                 <td>{item.song}</td>
-                <td>{item.rating}</td>
                 <td>{<Box
                       sx={{
                           '& > legend': { mt: 2 },
